@@ -5,4 +5,11 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="corercon" Version="5.0.2" />
+    <PackageReference Include="dsharpplus" Version="4.1.0" />
+    <PackageReference Include="mongodb.bson" Version="2.14.1" />
+    <PackageReference Include="mongodb.driver" Version="2.14.1" />
+  </ItemGroup>
+
 </Project>
