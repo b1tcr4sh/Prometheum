@@ -1,12 +1,19 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Prometheum;
+using Prometheum.Config;
 
 namespace Prometheum
 {
     class Program
     {
-        static void Main(string[] args)
+        private static string token;
+        static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            ConfigManager manager = new ConfigManager("./config.json");
+
+            DiscordBot bot = new DiscordBot();
         }
+        
     }
 }
