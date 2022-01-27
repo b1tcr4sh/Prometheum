@@ -7,9 +7,9 @@ using System.Text.Json.Serialization;
 namespace Prometheum.Config {
     class ConfigManager {
         public Config Config { get; private set; }
-        public String Path { get; private set; }
+        public String FilePath { get; private set; }
         public ConfigManager(String @Path) {
-            this.Path = Path;
+            this.FilePath = Path;
 
             if (File.Exists(Path)) {
                 Config = ParseConfig();
@@ -18,8 +18,8 @@ namespace Prometheum.Config {
             }
         }
         private Config ParseConfig() {
-            string jsonString = File.ReadAllText(Path);
-            Console.WriteLine("Parsed Config at {0}", Path);
+            string jsonString = File.ReadAllText(FilePath);
+            Console.WriteLine("Parsed Config at {0}", FilePath);
             return JsonSerializer.Deserialize<Config>(jsonString);
         }
 
@@ -32,7 +32,7 @@ namespace Prometheum.Config {
 
             // using FileStream createStream = File.Create("./Config.json");
             string serializedJson = JsonSerializer.Serialize<Config>(defaultConfig, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(Path, serializedJson);
+            File.WriteAllText(FilePath, serializedJson);
             Console.WriteLine("[First Startup] Created Default Config.json file.  You can enter the config values now.");
         } 
     }

@@ -10,9 +10,9 @@ namespace Prometheum
         private static string token;
         static async Task Main(string[] args)
         {
-            ConfigManager manager = new ConfigManager("./config.json");
-
             DiscordBot bot = new DiscordBot();
+
+            await bot.ConnectAsync();
         }
         
     }
