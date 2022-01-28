@@ -7,6 +7,10 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
 using Prometheum.Config;
 
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using System.IO;
+
 public class DiscordBot {
     public String token;
     private DiscordClient client;
@@ -36,13 +40,31 @@ public class DiscordBot {
         return manager.Config;
     }
     public async Task ListServersAndChannels(object sender, GuildDownloadCompletedEventArgs e) {
+        List<ServerChannel> servers = new List<ServerChannel>();
+
         foreach (KeyValuePair<ulong, DiscordGuild> serverKeyPair in client.Guilds) {
             Console.WriteLine("Server {0}:", serverKeyPair.Value.Name);
 
             IReadOnlyList<DiscordChannel> channels = await serverKeyPair.Value.GetChannelsAsync();
+
+            
+            String[] channelNames = new String[channels.Count];
+
+            int i = 0;
             foreach (DiscordChannel channel in channels) {
                 Console.WriteLine("     " + channel.Name);
+                channelNames[i] = channel.Name;
+                i++;
             }
+
+            servers.Add(new ServerChannel {
+                ServerName = serverKeyPair.Value.Name,
+                ChannelNames = channelNames
+            });
         }
+
+        string serializedJson = JsonSerializer.Serialize<List<ServerChannel>>(servers);
+
+        File.WriteAllText(@"./Servers.json", serializedJson);
     }
 }
