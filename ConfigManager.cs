@@ -33,7 +33,7 @@ namespace Prometheum.Config {
             // using FileStream createStream = File.Create("./Config.json");
             string serializedJson = JsonSerializer.Serialize<Config>(defaultConfig, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(FilePath, serializedJson);
-            Console.WriteLine("[First Startup] Created Default Config.json file.  You can enter the config values now.");
+            Console.WriteLine("[First Startup] Generated default config at {0}.  Change the values and run the app for changes to take effect.", FilePath);
         } 
     }
 }
