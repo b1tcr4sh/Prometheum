@@ -6,6 +6,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.CommandsNext;
 using Prometheum.Config;
+using Prometheum.Commands;
 
 namespace Prometheum {
     public class DiscordBot {
@@ -29,7 +30,7 @@ namespace Prometheum {
                 EnableDms = false
             });
             commandsNext.CommandErrored += HandleCommandError;
-            
+            commandsNext.RegisterCommands<MinecraftUtils>();
 
             await client.ConnectAsync();
 
