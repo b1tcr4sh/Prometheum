@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Prometheum.Config {
     class ConfigManager {
-        public Config Config { get; private set; }
+        public ConfigFile Config { get; private set; }
         public String FilePath { get; private set; }
         public ConfigManager(String @Path) {
             this.FilePath = Path;
@@ -17,21 +17,22 @@ namespace Prometheum.Config {
                 CreateConfig();
             }
         }
-        private Config ParseConfig() {
+        private ConfigFile ParseConfig() {
             string jsonString = File.ReadAllText(FilePath);
             Console.WriteLine("Parsed Config at {0}", FilePath);
-            return JsonSerializer.Deserialize<Config>(jsonString);
+            return JsonSerializer.Deserialize<ConfigFile>(jsonString);
         }
 
         private void CreateConfig() {
 
-            Config defaultConfig = new Config {
-                Token = "INSERT_DISCORD_TOKEN"
+            ConfigFile defaultConfig = new ConfigFile {
+                Token = "INSERT_DISCORD_TOKEN",
+                Prefixes = new string[] {"Insert", "Prefixes", "Here"}
             };
 
 
             // using FileStream createStream = File.Create("./Config.json");
-            string serializedJson = JsonSerializer.Serialize<Config>(defaultConfig, new JsonSerializerOptions { WriteIndented = true });
+            string serializedJson = JsonSerializer.Serialize<ConfigFile>(defaultConfig, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(FilePath, serializedJson);
             Console.WriteLine("[First Startup] Generated default config at {0}.  Change the values and run the app for changes to take effect.", FilePath);
         } 

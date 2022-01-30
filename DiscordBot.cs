@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using DSharpPlus.Exceptions;
+using DSharpPlus.CommandsNext;
 using Prometheum.Config;
 
 namespace Prometheum {
@@ -13,7 +13,7 @@ namespace Prometheum {
         private DiscordClient client;
         public async Task ConnectAsync() {
 
-            Config config = ConfigInit();
+            ConfigFile config = ConfigInit();
 
             if (config.Token == null) return;
 
@@ -23,6 +23,13 @@ namespace Prometheum {
                 Token = token,
                 TokenType = TokenType.Bot
             });
+            CommandsNextExtension commandsNext = client.UseCommandsNext(new CommandsNextConfiguration {
+                StringPrefixes = config.Prefixes,
+                CaseSensitive = true,
+                EnableDms = false
+            });
+            commandsNext.CommandErrored += HandleCommandError;
+            
 
             await client.ConnectAsync();
 
@@ -30,7 +37,7 @@ namespace Prometheum {
 
             await Task.Delay(-1);
         }
-        private Config ConfigInit() {
+        private ConfigFile ConfigInit() {
             ConfigManager manager = new ConfigManager("./config.json");
             token = manager.Config.Token;
 
@@ -45,6 +52,10 @@ namespace Prometheum {
                     Console.WriteLine("     " + channel.Name);
                 }
             }
+        }
+        private async Task HandleCommandError(object sender, CommandErrorEventArgs e) {
+            await e.Context.RespondAsync("The command failed to execute with an error, you may need to message your server admin");
+            await e.Context.Channel.SendMessageAsync(e.Exception.Message);
         }
     }
 }
