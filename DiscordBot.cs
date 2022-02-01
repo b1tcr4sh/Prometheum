@@ -31,6 +31,7 @@ namespace Prometheum {
             });
             commandsNext.CommandErrored += HandleCommandError;
             commandsNext.RegisterCommands<MinecraftUtils>();
+            commandsNext.RegisterCommands<Utils>();
 
             await client.ConnectAsync();
 

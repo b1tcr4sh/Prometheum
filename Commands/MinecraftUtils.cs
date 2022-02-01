@@ -11,7 +11,7 @@ using CoreRCON.PacketFormats;
 using Prometheum;
 
 namespace Prometheum.Commands {
-    class MinecraftUtils : BaseCommandModule {
+    public class MinecraftUtils : BaseCommandModule {
         // TODO: Server register command that will register a server address and store it in DB as this Guild's MC server.  Will be a class member that is used in all minecraft server commands.
 
         [Command("status")]
