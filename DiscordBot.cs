@@ -12,18 +12,32 @@ namespace Prometheum {
     public class DiscordBot {
         public String token;
         private DiscordClient client;
+        private DiscordBotOptions options;
+
+        public DiscordBot() {}
+        public DiscordBot(DiscordBotOptions options) {
+            this.options = options;
+        }
         public async Task ConnectAsync() {
 
             ConfigFile config = ConfigInit();
 
             if (config.Token == null) return;
 
-            client = new DiscordClient(new DiscordConfiguration {
-                AutoReconnect = true,
-                MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Debug,
-                Token = token,
-                TokenType = TokenType.Bot
-            });
+            DiscordConfiguration discordConfig = new DiscordConfiguration {
+                    AutoReconnect = true,
+                    MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Debug,
+                    TokenType = TokenType.Bot
+            };
+
+            if (options.UseDebugToken) {
+                discordConfig.Token = config.TesterToken;
+            } else {
+                discordConfig.Token = config.Token;
+            }
+
+            client = new DiscordClient(discordConfig);
+            
             CommandsNextExtension commandsNext = client.UseCommandsNext(new CommandsNextConfiguration {
                 StringPrefixes = config.Prefixes,
                 CaseSensitive = true,

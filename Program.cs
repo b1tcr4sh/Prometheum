@@ -5,13 +5,27 @@ using Prometheum.Config;
 
 namespace Prometheum
 {
-    class Program
+    static class Program
     {
+        private static DiscordBotOptions options;
         static async Task Main(string[] args)
         {
-            DiscordBot bot = new DiscordBot();
+            options = new DiscordBotOptions(); 
+
+            if (args.Length >= 1) {
+                ParseArgs(args);
+            }
+
+            DiscordBot bot = new DiscordBot(options);
 
             await bot.ConnectAsync();
-        }   
+        }
+        private static void ParseArgs(string[] args) {
+            switch (args[0]) {
+                case "-d":
+                    options.UseDebugToken = true;
+                    break;
+            }
+        }
     }
 }
