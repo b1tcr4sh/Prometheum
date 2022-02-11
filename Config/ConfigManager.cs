@@ -28,7 +28,8 @@ namespace Prometheum.Config {
 
             ConfigFile defaultConfig = new ConfigFile {
                 Token = "INSERT_DISCORD_TOKEN",
-                Prefixes = new string[] {"Insert", "Prefixes", "Here"}
+                Prefixes = new string[] {"Insert", "Prefixes", "Here"},
+                TesterToken = "DEBUG_DISCORD_TOKEN"
             };
 
 
