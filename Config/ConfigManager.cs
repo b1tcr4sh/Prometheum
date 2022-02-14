@@ -5,7 +5,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Prometheum.Config {
-    // TODO: Optional Tester_Auth_Token attribute which can be toggled and used with a runtime argument.
     class ConfigManager {
         public ConfigFile Config { get; private set; }
         public String FilePath { get; private set; }
