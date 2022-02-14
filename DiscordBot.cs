@@ -51,7 +51,9 @@ namespace Prometheum {
 
             await client.ConnectAsync();
 
-            client.GuildDownloadCompleted += ListServersAndChannels;
+            Console.WriteLine("Connected as Bot: {0}", client.CurrentUser.Username);
+
+            // client.GuildDownloadCompleted += ListServersAndChannels;
 
             await Task.Delay(-1);
         }
