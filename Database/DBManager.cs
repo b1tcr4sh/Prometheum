@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace Prometheum.DB {
+namespace Prometheum.Database {
     public class DBManager {
         public DBManager(string url, string databaseName) {
             MongoClient client = new MongoClient(new MongoUrl(url));

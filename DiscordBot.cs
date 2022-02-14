@@ -7,7 +7,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.CommandsNext;
 using Prometheum.Config;
 using Prometheum.Commands;
-using Prometheum.DB;
+using Prometheum.Database;
 
 namespace Prometheum {
     public class DiscordBot {
