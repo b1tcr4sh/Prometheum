@@ -7,6 +7,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.CommandsNext;
 using Prometheum.Config;
 using Prometheum.Commands;
+using Prometheum.DB;
 
 namespace Prometheum {
     public class DiscordBot {
@@ -21,6 +22,7 @@ namespace Prometheum {
         public async Task ConnectAsync() {
 
             ConfigFile config = ConfigInit();
+            DBManager manager = new DBManager(config.MongoConnectionURL, config.MongoDatabaseName);
 
             if (config.Token == null) return;
 

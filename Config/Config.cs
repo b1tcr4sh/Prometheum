@@ -3,5 +3,7 @@ namespace Prometheum.Config {
         public string Token { get; set; }
         public string[] Prefixes { get; set; }
         public string TesterToken { get; set; }
+        public string MongoDatabaseName { get; set; }
+        public string MongoConnectionURL { get; set; } 
     }
 }
