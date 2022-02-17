@@ -25,6 +25,10 @@ namespace Prometheum
                 case "-d":
                     options.UseDebugToken = true;
                     break;
+                case "--connect":
+                    if (args[1].Equals("false")) 
+                        options.InitiateAPIConenection = false;
+                    break;
             }
         }
     }

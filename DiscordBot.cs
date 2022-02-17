@@ -49,9 +49,10 @@ namespace Prometheum {
             commandsNext.RegisterCommands<MinecraftUtils>();
             commandsNext.RegisterCommands<Utils>();
 
-            await client.ConnectAsync();
-
-            Console.WriteLine("Connected as Bot: {0}", client.CurrentUser.Username);
+            if (options.InitiateAPIConenection) {
+                await client.ConnectAsync(); 
+                Console.WriteLine("Connected as Bot: {0}", client.CurrentUser.Username);
+            }
 
             // client.GuildDownloadCompleted += ListServersAndChannels;
 
