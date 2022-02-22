@@ -14,6 +14,7 @@ namespace Prometheum {
         public String token;
         private DiscordClient client;
         private DiscordBotOptions options;
+        private DBManager DatabaseManager;
 
         public DiscordBot() {}
         public DiscordBot(DiscordBotOptions options) {
@@ -22,7 +23,7 @@ namespace Prometheum {
         public async Task ConnectAsync() {
 
             ConfigFile config = ConfigInit();
-            DBManager manager = new DBManager(config.MongoConnectionURL, config.MongoDatabaseName);
+            DatabaseManager = new DBManager(config.MongoConnectionURL, config.MongoDatabaseName);
 
             if (config.Token == null) return;
 
@@ -54,7 +55,7 @@ namespace Prometheum {
                 Console.WriteLine("Connected as Bot: {0}", client.CurrentUser.Username);
             }
 
-            // client.GuildDownloadCompleted += ListServersAndChannels;
+            client.GuildDownloadCompleted += ListServersAndChannels;
 
             await Task.Delay(-1);
         }
@@ -68,6 +69,7 @@ namespace Prometheum {
             foreach (KeyValuePair<ulong, DiscordGuild> serverKeyPair in client.Guilds) {
                 Console.WriteLine("Server {0}:", serverKeyPair.Value.Name);
 
+                await DatabaseManager.CreateDocument<DiscordGuild>(serverKeyPair.Value, "Servers");
                 IReadOnlyList<DiscordChannel> channels = await serverKeyPair.Value.GetChannelsAsync();
                 foreach (DiscordChannel channel in channels) {
                     Console.WriteLine("     " + channel.Name);
