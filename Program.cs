@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Prometheum;
 using Prometheum.Config;
 
@@ -7,29 +8,22 @@ namespace Prometheum
 {
     static class Program
     {
-        private static DiscordBotOptions options;
-        static async Task Main(string[] args)
+        private static StartupOptions options;
+        static async Task<int> Main(string[] args)
         {
-            options = new DiscordBotOptions(); 
+            options = new StartupOptions(); 
 
             if (args.Length >= 1) {
-                ParseArgs(args);
+            ArgHandler handler = new ArgHandler();
+
+                options = handler.ParseArgs(args);
             }
 
             DiscordBot bot = new DiscordBot(options);
 
             await bot.ConnectAsync();
-        }
-        private static void ParseArgs(string[] args) {
-            switch (args[0]) {
-                case "-d":
-                    options.UseDebugToken = true;
-                    break;
-                case "--connect":
-                    if (args[1].Equals("false")) 
-                        options.InitiateAPIConenection = false;
-                    break;
-            }
+
+            return 0;
         }
     }
 }

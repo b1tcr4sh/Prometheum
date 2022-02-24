@@ -13,11 +13,11 @@ namespace Prometheum {
     public class DiscordBot {
         public String token;
         private DiscordClient client;
-        private DiscordBotOptions options;
+        private StartupOptions options;
         private DBManager DatabaseManager;
 
         public DiscordBot() {}
-        public DiscordBot(DiscordBotOptions options) {
+        public DiscordBot(StartupOptions options) {
             this.options = options;
         }
         public async Task ConnectAsync() {

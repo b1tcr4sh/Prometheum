@@ -40,17 +40,19 @@ namespace Prometheum.Database {
 
         private async void SyncDatabaseCollections(IMongoDatabase db) {
             IAsyncCursor<string> collections = await db.ListCollectionNamesAsync();
+            Console.WriteLine("Performing Collection Synchronization...");
 
             foreach (string name in CollectionNames) {
                 bool isFoundInCollection = false;
                 await collections.ForEachAsync(localName => {
-                    if (name == localName) {
+                    if (name.Equals(localName)) {
                         isFoundInCollection = true;
                     }
                 });
 
-                if (isFoundInCollection) {
+                if (!isFoundInCollection) {
                     await db.CreateCollectionAsync(name);
+                    Console.WriteLine($"Created new collection {name}");
                 }
             }
         }
