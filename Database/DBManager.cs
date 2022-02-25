@@ -14,7 +14,7 @@ namespace Prometheum.Database {
         public DBManager(string url, string databaseName) {
             MongoClient client = new MongoClient(url);
             Database = client.GetDatabase(databaseName);
-            
+
             Console.WriteLine($"Connected to database {databaseName} : {url}");
 
             SyncDatabaseCollections(Database);
@@ -55,6 +55,7 @@ namespace Prometheum.Database {
                     Console.WriteLine($"Created new collection {name}");
                 }
             }
+            Console.WriteLine("Done!");
         }
     }
 }

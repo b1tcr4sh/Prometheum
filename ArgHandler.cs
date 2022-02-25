@@ -8,15 +8,14 @@ namespace Prometheum
         StartupOptions options;
         public StartupOptions ParseArgs(string[] args) {            
             argDefinitions.Add("debug", arg => {
-                if (arg != String.Empty)
                 options.UseDebugToken = true;
             });
             argDefinitions.Add("connect", arg => {
-                if (args[1].Equals("false")) {
+                // if (arg.Equals("false")) {
                     options.InitiateAPIConenection = false;
-                } else if (!args[1].Equals("true")) {
-                    Console.WriteLine("Invalid Argument Passed.  Proceeding as normal...");
-                }
+                // } else if (!args[1].Equals("true")) {
+                //     Console.WriteLine("Invalid Argument Passed.  Proceeding as normal...");
+                // }
             });
             argDefinitions.Add("help", arg => {
                 PrintHelpMessage();
@@ -25,7 +24,7 @@ namespace Prometheum
             for (int i = 0; i < args.Length; i++) {
                 foreach (KeyValuePair<string, Action<String>> pair in argDefinitions) {
                     if (args[i].Contains("--" + pair.Key) || args[i].Contains("-" + pair.Key.Substring(0, 1))) {
-                        pair.Value(args[i + 1]);
+                        pair.Value(args[i]);
                     }
                 }
             }

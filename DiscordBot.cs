@@ -52,10 +52,10 @@ namespace Prometheum {
 
             if (options.InitiateAPIConenection) {
                 await client.ConnectAsync(); 
-                Console.WriteLine("Connected as Bot: {0}", client.CurrentUser.Username);
+                client.Ready += OnReady;
             }
 
-            client.GuildDownloadCompleted += ListServersAndChannels;
+            // client.GuildDownloadCompleted += ListServersAndChannels;
 
             await Task.Delay(-1);
         }
@@ -79,6 +79,10 @@ namespace Prometheum {
         private async Task HandleCommandError(object sender, CommandErrorEventArgs e) {
             await e.Context.RespondAsync("The command failed to execute with an error, you may need to message your server admin");
             await e.Context.Channel.SendMessageAsync(e.Exception.Message);
+        }
+        private Task OnReady(Object sender, ReadyEventArgs e) {
+            Console.WriteLine("Connected as Bot: {0}", client.CurrentUser.Username);
+            return Task.CompletedTask;
         }
     }
 }
