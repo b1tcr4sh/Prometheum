@@ -4,61 +4,47 @@ using System.Collections.Generic;
 namespace Prometheum
 {
     public class ArgHandler {
-        private static Dictionary<string, Action<string>> argDefinitions = new Dictionary<string, Action<string>>();
+        private static List<Argument> argDefinitions = new List<Argument>();
         StartupOptions options;
         public StartupOptions ParseArgs(string[] args) {            
-            argDefinitions.Add("debug", arg => {
+            argDefinitions.Add(new Argument("debug", "Connects using the \"TesterToken\" token providedin the config file.", (arg) => {
                 options.UseDebugToken = true;
-            });
-            argDefinitions.Add("connect", arg => {
+            }));
+            argDefinitions.Add(new Argument("help", "Prints the help message.", (arg) => {
+                PrintHelpMessage();
+            }));
+            argDefinitions.Add(new Argument("connect", "Decides whether or not to initiate a connection to Discord's API.", (arg) => {
                 // if (arg.Equals("false")) {
                     options.InitiateAPIConenection = false;
                 // } else if (!args[1].Equals("true")) {
                 //     Console.WriteLine("Invalid Argument Passed.  Proceeding as normal...");
                 // }
-            });
-            argDefinitions.Add("help", arg => {
-                PrintHelpMessage();
-            });
+            }));
 
             for (int i = 0; i < args.Length; i++) {
-                foreach (KeyValuePair<string, Action<String>> pair in argDefinitions) {
-                    if (args[i].Contains("--" + pair.Key) || args[i].Contains("-" + pair.Key.Substring(0, 1))) {
-                        pair.Value(args[i]);
+                foreach (Argument argument in argDefinitions) {
+                    if (args[i].Contains("--" + argument.Name) || args[i].Contains("-" + argument.Name.Substring(0, 1))) {
+                        if (args[i + 1] != null)
+                            argument.Execute(args[i]);
+                        else argument.Execute(String.Empty);
                     }
                 }
             }
-
-
-
-            // switch (args[0]) {
-            //     case "-d":
-            //     case "--debug":
-            //         options.UseDebugToken = true;
-            //         break;
-            //     case "--connect":
-            //         if (args[1].Equals("false"))
-            //             options.InitiateAPIConenection = false;
-            //         break;
-            //     case "-h":
-            //     case "--help":
-            //         PrintHelpMessage();
-            //         break;
-            //     default:
-            //         PrintHelpMessage();
-            //         break;
-            // }
-
             return options;
         }
         private void PrintHelpMessage() {
-            Console.WriteLine("usage: Prometheum -d | [--connect initiate connection] ");
+            Console.Write("usage: Prometheum ");
 
-            foreach (KeyValuePair<string, Action<string>> pair in argDefinitions) {
-
+            foreach (Argument argument in argDefinitions) {
+                Console.Write($"-{argument.Name.Substring(0,1)} | ");
             }
+            Console.Write("\n");
 
             Console.WriteLine("Options:");
+            
+            foreach (Argument arg in argDefinitions) {
+                Console.WriteLine($"    -{arg.Name.Substring(0,1)}, --{arg.Name}       {arg.Description}");
+            }
 
             Environment.Exit(0);
         }
