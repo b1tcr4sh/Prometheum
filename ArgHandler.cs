@@ -8,17 +8,13 @@ namespace Prometheum
         StartupOptions options;
         public StartupOptions ParseArgs(string[] args) {            
             argDefinitions.Add(new Argument("debug", "Connects using the \"TesterToken\" token providedin the config file.", (arg) => {
-                options.UseDebugToken = true;
+                options.UseDebugToken = true; // Prevents connection for some reason???
             }));
             argDefinitions.Add(new Argument("help", "Prints the help message.", (arg) => {
                 PrintHelpMessage();
             }));
-            argDefinitions.Add(new Argument("connect", "Decides whether or not to initiate a connection to Discord's API.", (arg) => {
-                // if (arg.Equals("false")) {
-                    options.InitiateAPIConenection = false;
-                // } else if (!args[1].Equals("true")) {
-                //     Console.WriteLine("Invalid Argument Passed.  Proceeding as normal...");
-                // }
+            argDefinitions.Add(new Argument("no-connect", "Decides whether or not to initiate a connection to Discord's API.", (arg) => {
+                options.InitiateAPIConenection = false;
             }));
 
             for (int i = 0; i < args.Length; i++) {
