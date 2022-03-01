@@ -9,7 +9,7 @@ namespace Prometheum.Database {
     public class DBManager {
         private IMongoDatabase Database;
         public String[] CollectionNames = new String[] {
-            "DiscordMinecraftIntegration"
+            "MinecraftServers"
         };
         public DBManager(string url, string databaseName) {
             MongoClient client = new MongoClient(url);
