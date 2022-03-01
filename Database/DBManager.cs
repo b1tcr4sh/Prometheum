@@ -12,12 +12,17 @@ namespace Prometheum.Database {
             "MinecraftServers"
         };
         public DBManager(string url, string databaseName) {
-            MongoClient client = new MongoClient(url);
-            Database = client.GetDatabase(databaseName);
+
+            try {
+                MongoClient client = new MongoClient(url);
+                Database = client.GetDatabase(databaseName);
+            } catch (TimeoutException exception) {
+                Console.WriteLine("Failed to connect to {0}: {1}", url, exception.Message);
+            }
 
             Console.WriteLine($"Connected to database {databaseName} : {url}");
 
-            SyncDatabaseCollections(Database);
+            SyncDatabaseCollections(Database).GetAwaiter().GetResult();
         }
 
         public async Task CreateDocument<T>(T objectToUpload, String collectionName) {
@@ -38,19 +43,20 @@ namespace Prometheum.Database {
             return collectionNames;          
         } 
 
-        private async void SyncDatabaseCollections(IMongoDatabase db) {
+        private async Task SyncDatabaseCollections(IMongoDatabase db) {
             IAsyncCursor<string> collections = await db.ListCollectionNamesAsync();
             Console.WriteLine("Performing Collection Synchronization...");
 
             foreach (string name in CollectionNames) {
                 bool isFoundInCollection = false;
+
                 await collections.ForEachAsync(localName => {
                     if (name.Equals(localName)) {
                         isFoundInCollection = true;
                     }
                 });
 
-                if (!isFoundInCollection) {
+                if (isFoundInCollection == false) {
                     await db.CreateCollectionAsync(name);
                     Console.WriteLine($"Created new collection {name}");
                 }
