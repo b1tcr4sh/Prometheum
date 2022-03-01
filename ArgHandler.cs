@@ -5,7 +5,7 @@ namespace Prometheum
 {
     public class ArgHandler {
         private static List<Argument> argDefinitions = new List<Argument>();
-        StartupOptions options;
+        StartupOptions options = new StartupOptions();
         public StartupOptions ParseArgs(string[] args) {            
             argDefinitions.Add(new Argument("debug", "Connects using the \"TesterToken\" token providedin the config file.", (arg) => {
                 options.UseDebugToken = true; // Prevents connection for some reason???
@@ -20,8 +20,8 @@ namespace Prometheum
             for (int i = 0; i < args.Length; i++) {
                 foreach (Argument argument in argDefinitions) {
                     if (args[i].Contains("--" + argument.Name) || args[i].Contains("-" + argument.Name.Substring(0, 1))) {
-                        if (args[i + 1] != null)
-                            argument.Execute(args[i]);
+                        if (args.Length > Array.IndexOf(args, args[i]) + 1)
+                            argument.Execute(args[i + 1]);
                         else argument.Execute(String.Empty);
                     }
                 }

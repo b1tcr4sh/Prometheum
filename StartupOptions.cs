@@ -1,6 +1,6 @@
 namespace Prometheum
 {
-    public struct StartupOptions {
+    public class StartupOptions {
         public bool UseDebugToken = false;
         public bool InitiateAPIConenection = true;
     }    
