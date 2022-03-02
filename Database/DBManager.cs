@@ -6,33 +6,26 @@ using MongoDB.Driver;
 using MongoDB.Bson.Serialization;
 
 namespace Prometheum.Database {
-    public class DBManager {
-        private IMongoDatabase Database;
-        public String[] CollectionNames = new String[] {
-            "MinecraftServers"
-        };
-        public DBManager(string url, string databaseName) {
+    public static class DBManager {
+        private static IMongoDatabase Database;
+        public static void Init(string url, string databaseName) {
 
-            try {
-                MongoClient client = new MongoClient(url);
-                Database = client.GetDatabase(databaseName);
-            } catch (TimeoutException exception) {
-                Console.WriteLine("Failed to connect to {0}: {1}", url, exception.Message);
-            }
+            MongoClient client = new MongoClient(url);
+            Database = client.GetDatabase(databaseName);
 
             Console.WriteLine($"Connected to database {databaseName} : {url}");
 
             SyncDatabaseCollections(Database).GetAwaiter().GetResult();
         }
 
-        public async Task CreateDocument<T>(T objectToUpload, String collectionName) {
+        public static async Task CreateDocument<T>(T objectToUpload, String collectionName) {
             IMongoCollection<T> collection = Database.GetCollection<T>(collectionName);
             await collection.InsertOneAsync(objectToUpload);
         }
         // public async Task RemoveDocument<T>(string collectionName) {
         //     IMongoCollection<T> collection = Database.GetCollection<T>(collectionName);
         // }
-        public async Task<List<string>> GetCollectionNames() {
+        public static async Task<List<string>> GetCollectionNames() {
             IAsyncCursor<string> collections = await Database.ListCollectionNamesAsync();
 
             List<String> collectionNames = new List<string>();
@@ -43,11 +36,11 @@ namespace Prometheum.Database {
             return collectionNames;          
         } 
 
-        private async Task SyncDatabaseCollections(IMongoDatabase db) {
+        private static async Task SyncDatabaseCollections(IMongoDatabase db) {
             IAsyncCursor<string> collections = await db.ListCollectionNamesAsync();
             Console.WriteLine("Performing Collection Synchronization...");
 
-            foreach (string name in CollectionNames) {
+            foreach (string name in Enum.GetValues(typeof(CollectionNames))) {
                 bool isFoundInCollection = false;
 
                 await collections.ForEachAsync(localName => {
@@ -63,5 +56,8 @@ namespace Prometheum.Database {
             }
             Console.WriteLine("Done!");
         }
+    }
+    public enum CollectionNames {
+        MinecraftServers
     }
 }
