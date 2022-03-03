@@ -37,6 +37,8 @@ namespace Prometheum.Database {
             
             if (finder.CountDocuments() > 1) {
                 return null;
+            } else if (finder.CountDocuments() == 0) {
+                return null;
             } else {
                 return finder.First<MinecraftServer>();
             }
