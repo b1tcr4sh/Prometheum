@@ -6,9 +6,6 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using CoreRCON;
-using CoreRCON.Parsers.Standard;
-using CoreRCON.PacketFormats;
 using Prometheum.Database;
 using Prometheum.Database.MC;
 
@@ -31,33 +28,38 @@ namespace Prometheum.Commands {
             await context.Channel.SendMessageAsync($"Added server {ServerAddress} to the database");
         }
 
-        // TODO: Server register command that will register a server address and store it in DB as this Guild's MC server.  Will be a class member that is used in all minecraft server commands.
+        // [Command("status")]
+        // [Description("Shows a status of the Discord Server's registered minecraft server.")]
+        // public async Task Status(CommandContext context) {
+        //     // TODO: Check if address is a url or ip address, and fetch the address of the url if needed before passing in to query.
+        //     MinecraftServer server = DBManager.GetMinecraftServerDocument(context.Guild.Id);
 
-        [Command("status")]
-        [Description("Shows a status of the Discord Server's registered minecraft server.")]
-        public async Task Status(CommandContext context) {
-            // TODO: Check if address is a url or ip address, and fetch the address of the url if needed before passing in to query.
-            MinecraftServer server = DBManager.GetMinecraftServerDocument(context.Guild.Id);
+        //     DiscordEmbedBuilder embedBuilder = new DiscordEmbedBuilder();
+        //     if (server == null) {
+        //         embedBuilder.WithColor(DiscordColor.Red);
+        //         embedBuilder.WithTitle("This Discord server does not have an associated Minecraft server");
+        //         embedBuilder.WithFooter("Use the <minecraft register> command to register one!");
+        //         await context.Channel.SendMessageAsync(embedBuilder.Build());
 
-            DiscordEmbedBuilder embedBuilder = new DiscordEmbedBuilder();
-            if (server == null) {
-                embedBuilder.WithColor(DiscordColor.Red);
-                embedBuilder.WithTitle("This Discord server does not have an associated Minecraft server");
-                embedBuilder.WithFooter("Use the <minecraft register> command to register one!");
-                await context.Channel.SendMessageAsync(embedBuilder.Build());
+        //         return;
+        //     }
 
-                return;
-            }
+        //     MinecraftQueryInfo serverStatus = await ServerQuery.Info(IPAddress.Parse(server.Address), 25575, ServerQuery.ServerType.Minecraft) as MinecraftQueryInfo;
 
-            MinecraftQueryInfo serverStatus = await ServerQuery.Info(IPAddress.Parse(server.Address), 25575, ServerQuery.ServerType.Minecraft) as MinecraftQueryInfo;
+        //     if (serverStatus == null) {
+        //         await context.Channel.SendMessageAsync("Something went wrong with the status request...");
+        //         return;
+        //     }
 
-            embedBuilder.Color = DiscordColor.Green;
-            embedBuilder.Title = $"{serverStatus.HostIp} Status";
-            embedBuilder.Description = $"{serverStatus.MessageOfTheDay}";
-            embedBuilder.AddField("Players Online:", serverStatus.NumPlayers);
-            DiscordEmbed embed = embedBuilder.Build();
+        //     embedBuilder.Color = DiscordColor.Green;
+        //     embedBuilder.Title = $"{serverStatus.HostIp} Status";
+        //     embedBuilder.Description = $"{serverStatus.MessageOfTheDay}";
+        //     embedBuilder.AddField("Version:", serverStatus.Version);
+        //     embedBuilder.AddField("Game Type:", serverStatus.Gametype);
+        //     embedBuilder.AddField("Players Online:", $"{serverStatus.NumPlayers} / {serverStatus.MaxPlayers}");
+        //     DiscordEmbed embed = embedBuilder.Build();
 
-            await context.Channel.SendMessageAsync(embed);
-        }
+        //     await context.Channel.SendMessageAsync(embed);
+        // }
     }
 }
