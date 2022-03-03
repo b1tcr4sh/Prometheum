@@ -19,7 +19,8 @@ namespace Prometheum.Commands {
         [Command("register")]
         [Description("Registers a Minecraft server with this Discord server.")]
         public async Task RegisterServer(CommandContext context, string ServerAddress) {
-            MinecraftServer server = new MinecraftServer() { Address = ServerAddress, Users = new List<MinecraftDiscordUserPair>() };
+            MinecraftServer server = new MinecraftServer() { Address = ServerAddress, Users = new List<MinecraftDiscordUserPair>(), ServerId = context.Guild.Id};
+
             await DBManager.CreateDocument<MinecraftServer>(server, CollectionNames.MinecraftServers.ToString());
             
         }
