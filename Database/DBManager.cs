@@ -8,6 +8,7 @@ using MongoDB.Bson.Serialization;
 namespace Prometheum.Database {
     public static class DBManager {
         private static IMongoDatabase Database;
+        private static string[] expectedCollectionNames = { "MinecraftServers" };
         public static void Init(string url, string databaseName) {
 
             MongoClient client = new MongoClient(url);
@@ -40,7 +41,7 @@ namespace Prometheum.Database {
             IAsyncCursor<string> collections = await db.ListCollectionNamesAsync();
             Console.WriteLine("Performing Collection Synchronization...");
 
-            foreach (string name in Enum.GetValues(typeof(CollectionNames))) {
+            foreach (string name in expectedCollectionNames) {
                 bool isFoundInCollection = false;
 
                 await collections.ForEachAsync(localName => {
