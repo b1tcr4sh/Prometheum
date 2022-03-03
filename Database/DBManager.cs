@@ -21,7 +21,7 @@ namespace Prometheum.Database {
             SyncDatabaseCollections(Database).GetAwaiter().GetResult();
         }
 
-        public static async Task CreateDocument<T>(T objectToUpload, String collectionName) {
+        public static async Task CreateDocumentAsync<T>(T objectToUpload, String collectionName) {
             IMongoCollection<T> collection = Database.GetCollection<T>(collectionName);
             await collection.InsertOneAsync(objectToUpload);
         }

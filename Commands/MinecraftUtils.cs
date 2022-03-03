@@ -21,8 +21,11 @@ namespace Prometheum.Commands {
         public async Task RegisterServer(CommandContext context, string ServerAddress) {
             MinecraftServer server = new MinecraftServer() { Address = ServerAddress, Users = new List<MinecraftDiscordUserPair>(), ServerId = context.Guild.Id};
 
-            await DBManager.CreateDocument<MinecraftServer>(server, CollectionNames.MinecraftServers.ToString());
-            
+            if (DBManager.GetMinecraftServerDocument(server.ServerId) != server) {
+                DBManager.UpdateMinecraftServerDocument((MinecraftServer serverToCompare) => serverToCompare.ServerId == server.ServerId, ServerAddress);
+            } else {
+                await DBManager.CreateDocumentAsync<MinecraftServer>(server, "MinecraftServers");
+            }            
         }
 
         // TODO: Server register command that will register a server address and store it in DB as this Guild's MC server.  Will be a class member that is used in all minecraft server commands.

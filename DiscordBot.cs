@@ -68,7 +68,7 @@ namespace Prometheum {
             foreach (KeyValuePair<ulong, DiscordGuild> serverKeyPair in client.Guilds) {
                 Console.WriteLine("Server {0}:", serverKeyPair.Value.Name);
 
-                await DBManager.CreateDocument<DiscordGuild>(serverKeyPair.Value, "Servers");
+                await DBManager.CreateDocumentAsync<DiscordGuild>(serverKeyPair.Value, "Servers");
                 IReadOnlyList<DiscordChannel> channels = await serverKeyPair.Value.GetChannelsAsync();
                 foreach (DiscordChannel channel in channels) {
                     Console.WriteLine("     " + channel.Name);
