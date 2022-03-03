@@ -14,6 +14,7 @@ using Prometheum.Database.MC;
 
 namespace Prometheum.Commands {
     [Group("minecraft")]
+    [Description("Commands to interact wih the Discord server's Minecraft server.")]
     public class MinecraftUtils : BaseCommandModule {
 
         [Command("register")]
