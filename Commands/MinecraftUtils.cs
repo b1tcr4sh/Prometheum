@@ -8,6 +8,9 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using Prometheum.Database;
 using Prometheum.Database.MC;
+using CoreRCON.Parsers.Standard;
+using CoreRCON.PacketFormats;
+using CoreRCON;
 
 namespace Prometheum.Commands {
     [Group("minecraft")]
@@ -28,38 +31,43 @@ namespace Prometheum.Commands {
             await context.Channel.SendMessageAsync($"Added server {ServerAddress} to the database");
         }
 
-        // [Command("status")]
-        // [Description("Shows a status of the Discord Server's registered minecraft server.")]
-        // public async Task Status(CommandContext context) {
-        //     // TODO: Check if address is a url or ip address, and fetch the address of the url if needed before passing in to query.
-        //     MinecraftServer server = DBManager.GetMinecraftServerDocument(context.Guild.Id);
+        [Command("status")]
+        [Description("Shows a status of the Discord Server's registered minecraft server.")]
+        public async Task Status(CommandContext context) {
+            // TODO: Check if address is a url or ip address, and fetch the address of the url if needed before passing in to query.
+            MinecraftServer server = DBManager.GetMinecraftServerDocument(context.Guild.Id);
 
-        //     DiscordEmbedBuilder embedBuilder = new DiscordEmbedBuilder();
-        //     if (server == null) {
-        //         embedBuilder.WithColor(DiscordColor.Red);
-        //         embedBuilder.WithTitle("This Discord server does not have an associated Minecraft server");
-        //         embedBuilder.WithFooter("Use the <minecraft register> command to register one!");
-        //         await context.Channel.SendMessageAsync(embedBuilder.Build());
+            DiscordEmbedBuilder embedBuilder = new DiscordEmbedBuilder();
+            if (server == null) {
+                embedBuilder.WithColor(DiscordColor.Red);
+                embedBuilder.WithTitle("This Discord server does not have an associated Minecraft server");
+                embedBuilder.WithFooter("Use the <minecraft register> command to register one!");
+                await context.Channel.SendMessageAsync(embedBuilder.Build());
 
-        //         return;
-        //     }
+                return;
+            }
 
-        //     MinecraftQueryInfo serverStatus = await ServerQuery.Info(IPAddress.Parse(server.Address), 25575, ServerQuery.ServerType.Minecraft) as MinecraftQueryInfo;
+            IPAddress serverAddress = Dns.GetHostAddresses(server.Address)[0];
 
-        //     if (serverStatus == null) {
-        //         await context.Channel.SendMessageAsync("Something went wrong with the status request...");
-        //         return;
-        //     }
+            RCON rconClient = new RCON(serverAddress, 25565, "uwumoment");
+            await rconClient.ConnectAsync();
 
-        //     embedBuilder.Color = DiscordColor.Green;
-        //     embedBuilder.Title = $"{serverStatus.HostIp} Status";
-        //     embedBuilder.Description = $"{serverStatus.MessageOfTheDay}";
-        //     embedBuilder.AddField("Version:", serverStatus.Version);
-        //     embedBuilder.AddField("Game Type:", serverStatus.Gametype);
-        //     embedBuilder.AddField("Players Online:", $"{serverStatus.NumPlayers} / {serverStatus.MaxPlayers}");
-        //     DiscordEmbed embed = embedBuilder.Build();
+            Status status = await rconClient.SendCommandAsync<Status>("status");
 
-        //     await context.Channel.SendMessageAsync(embed);
-        // }
+            if (status == null) {
+                await context.Channel.SendMessageAsync("Something went wrong with the status request...");
+                return;
+            }
+
+            embedBuilder.Color = DiscordColor.Green;
+            embedBuilder.Title = $"{status.Hostname} Status";
+            // embedBuilder.Description = $"{status.}";
+            embedBuilder.AddField("Version:", status.Version);
+            embedBuilder.AddField("Game Type:", status.Type);
+            embedBuilder.AddField("Players Online:", $"{status.Humans} / {status.MaxPlayers}");
+            DiscordEmbed embed = embedBuilder.Build();
+
+            await context.Channel.SendMessageAsync(embed);
+        }
     }
 }
