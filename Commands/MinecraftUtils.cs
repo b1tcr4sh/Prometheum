@@ -49,10 +49,7 @@ namespace Prometheum.Commands {
 
             IPAddress serverAddress = Dns.GetHostAddresses(server.Address)[0];
 
-            RCON rconClient = new RCON(serverAddress, 25565, "uwumoment");
-            await rconClient.ConnectAsync();
-
-            Status status = await rconClient.SendCommandAsync<Status>("status");
+            MinecraftQueryInfo status = await ServerQuery.Info(serverAddress, 25575, ServerQuery.ServerType.Minecraft) as MinecraftQueryInfo;
 
             if (status == null) {
                 await context.Channel.SendMessageAsync("Something went wrong with the status request...");
@@ -60,11 +57,11 @@ namespace Prometheum.Commands {
             }
 
             embedBuilder.Color = DiscordColor.Green;
-            embedBuilder.Title = $"{status.Hostname} Status";
+            embedBuilder.Title = $"{status.HostIp} Status";
             // embedBuilder.Description = $"{status.}";
             embedBuilder.AddField("Version:", status.Version);
-            embedBuilder.AddField("Game Type:", status.Type);
-            embedBuilder.AddField("Players Online:", $"{status.Humans} / {status.MaxPlayers}");
+            embedBuilder.AddField("Game Type:", status.Gametype);
+            embedBuilder.AddField("Players Online:", $"{status.NumPlayers} / {status.MaxPlayers}");
             DiscordEmbed embed = embedBuilder.Build();
 
             await context.Channel.SendMessageAsync(embed);
