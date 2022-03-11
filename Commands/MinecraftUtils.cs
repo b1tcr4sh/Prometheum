@@ -41,7 +41,7 @@ namespace Prometheum.Commands {
             if (server == null) {
                 embedBuilder.WithColor(DiscordColor.Red);
                 embedBuilder.WithTitle("This Discord server does not have an associated Minecraft server");
-                embedBuilder.WithFooter("Use the <minecraft register> command to register one!");
+                embedBuilder.WithFooter("Use the \"minecraft register <server address>\" command to register one!");
                 await context.Channel.SendMessageAsync(embedBuilder.Build());
 
                 return;
@@ -49,12 +49,15 @@ namespace Prometheum.Commands {
 
             IPAddress serverAddress = Dns.GetHostAddresses(server.Address)[0];
 
+            Console.WriteLine($"Performing server query on {serverAddress}");
+
             MinecraftQueryInfo status = await ServerQuery.Info(serverAddress, 25575, ServerQuery.ServerType.Minecraft) as MinecraftQueryInfo;
 
-            if (status == null) {
+
+            if (status.Players == null) {
                 await context.Channel.SendMessageAsync("Something went wrong with the status request...");
                 return;
-            }
+            } else Console.WriteLine("Completed query");
 
             embedBuilder.Color = DiscordColor.Green;
             embedBuilder.Title = $"{status.HostIp} Status";
